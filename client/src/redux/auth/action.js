@@ -46,7 +46,7 @@ const logIn = (values) => (dispatch) => {
 }
 
 const signUp = (values) => (dispatch) => {
-    dispatch(ACTIONS.TOPUP.request())
+    dispatch(ACTIONS.signup.request())
 
     api
         .post(URLS.USER.SIGN_UP, values)

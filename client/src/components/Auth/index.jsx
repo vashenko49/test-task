@@ -84,7 +84,7 @@ const Auth = ({ isLogIn = true }) => {
 
             <div className={css.authFormFooter}>
               <Button block loading={loading} type="primary" htmlType="submit">
-                Login
+                {isLogIn?"Login":"SignUp"}
               </Button>
             </div>
           </Form>
