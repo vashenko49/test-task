@@ -7,7 +7,8 @@ const {
   findUserByEmail,
   createUser,
   findUserById,
-  pushAccountsToUser
+  pushAccountsToUser,
+  getAllUser
 } = require('../service/UserService');
 const {
   createRefreshToken,
@@ -231,3 +232,32 @@ exports.getNewTokenByRefreshToken = async(req, res) => {
     session.endSession();
   }
 };
+
+exports.getProfile = async(req, res)=>{
+  try {
+    const {_id: userId} = req.user;
+
+    const user = await findUserById(userId)
+
+    return res.status(200)
+      .json(_.omit({...user._doc}, 'password'));
+  }
+  catch (e){
+    return res.status(500)
+      .json(serverError(e));
+  }
+}
+
+exports.getAllUser = async(req, res)=>{
+  try{
+    const allUser = await getAllUser();
+
+    return res.status(200)
+      .json(allUser);
+  }
+  catch (e){
+    console.log(e);
+    return res.status(500)
+      .json(serverError(e));
+  }
+}

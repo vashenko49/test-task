@@ -7,12 +7,7 @@ exports.createTransaction = async(account, description, balance, transactionAmou
   {account, description, balance, transactionAmount, currency}
 ).save({session})
 
-exports.findTransaction = async(accountId, page, limit)=> await Transaction.paginate(
+exports.findTransaction = async(accountId) => await Transaction.find(
   {
     account: accountId
-  },
-  {
-    page,
-    limit
-  }
-)
+  })

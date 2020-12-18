@@ -15,10 +15,12 @@ const {
 } = require('../service/AccountService');
 const {
   pushAccountsToUser,
-  pullAccountsToUser
+  pullAccountsToUser,
+  findUserById
 } = require('../service/UserService');
 const {
-  createTransaction
+  createTransaction,
+  findTransactionByAccountId
 } = require('../service/TransactionService');
 const {exchangeRateFromToByAmount} = require('../repository/RateRepository');
 
@@ -35,7 +37,7 @@ exports.createAccount = async(req, res) => {
 
   await session.startTransaction();
   try {
-    const {selectedCurrency, selectedTypeAccount} = req.body;
+    const {currency: selectedCurrency, typeAccount: selectedTypeAccount} = req.body;
 
     const {_id} = req.user;
 
@@ -213,7 +215,8 @@ exports.transferFromTo = async(req, res) => {
     accountFrom = await withDraw(fromNumber, amount, session);
 
     if (accountTo.currency !== accountFrom.currency){
-      amount = await exchangeRateFromToByAmount(accountFrom.currency, accountTo.currency, amount).rates[accountTo.currency]
+      amount = await exchangeRateFromToByAmount(accountFrom.currency, accountTo.currency, amount)
+      amount = amount.rates[accountTo.currency]
     }
 
     await topUpAccount(toNumber, amount, session);
@@ -230,10 +233,15 @@ exports.transferFromTo = async(req, res) => {
 
 
     await session.commitTransaction();
+
+    const userAccount = await findUserById(userId);
+
+
     return res.status(200)
-      .json(accountFrom);
+      .json(userAccount.accounts);
   }
   catch (e){
+    console.log(e);
     await session.abortTransaction();
     return res.status(500)
       .json(serverError(e));
@@ -288,5 +296,28 @@ exports.changeCurrencyAccount = async(req, res) => {
   }
   finally {
     session.endSession();
+  }
+}
+
+
+exports.getTransactionByAccountId = async(req, res)=>{
+  const error = catchErrorsExpressValidator(req);
+
+  if (error){
+    return res.status(402)
+      .json(error);
+  }
+
+  try {
+    const {accountId} = req.query;
+    const tran = await findTransactionByAccountId(accountId);
+
+    return res.status(200)
+      .json(tran);
+  }
+  catch (e){
+ 
+    return res.status(500)
+      .json(serverError(e));
   }
 }

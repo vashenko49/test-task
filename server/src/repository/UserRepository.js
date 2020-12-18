@@ -30,3 +30,6 @@ exports.pullAccountsToUser = async(userId, accountsId, session)=>await User.find
     session
   }
 ).populate('accounts')
+
+
+exports.getAllUser = async()=> await User.find({}).select('-password');

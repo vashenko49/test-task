@@ -9,7 +9,9 @@ const {
   logIn,
   signUp,
   logOut,
-  getNewTokenByRefreshToken
+  getNewTokenByRefreshToken,
+  getProfile,
+  getAllUser
 } = require('../controller/UserController');
 
 const customPassword = (isRequire) => ({
@@ -72,7 +74,11 @@ router.get(
 
 router.get(
   '/refresh-token', passport.authenticate('refresh-token', {session: false}), getNewTokenByRefreshToken
-)
+);
+
+router.get('/profile', passport.authenticate('passport', {session: false}), getProfile)
+
+router.get('/all', passport.authenticate('admin', {session: false}), getAllUser)
 
 
 module.exports = router;

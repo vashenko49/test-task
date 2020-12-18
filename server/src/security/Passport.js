@@ -88,7 +88,7 @@ module.exports = async(passport) => {
           const user = await findUserById(_id);
 
 
-          if (user.isAdmin){
+          if (!user.isAdmin){
             return done(null, false, 'User is not admin!');
           }
 

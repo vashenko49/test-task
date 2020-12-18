@@ -14,7 +14,8 @@ const {
   deleteAccountByNumber,
   topUpAccount,
   transferFromTo,
-  changeCurrencyAccount
+  changeCurrencyAccount,
+  getTransactionByAccountId
 } = require('../controller/AccountController');
 
 
@@ -109,6 +110,17 @@ router.put('/change-currency',
     })
   ],
   changeCurrencyAccount)
+
+
+router.get('/transaction', [
+  passport.authenticate('passport', {session: false}),
+  checkSchema({
+    accountId: {
+      in: [ 'query' ],
+      isEmpty: false
+    }
+  })
+], getTransactionByAccountId)
 
 
 module.exports = router;
