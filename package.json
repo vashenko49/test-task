@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
+    "startAll": "concurrently \"yarn --cwd server run start\" \"yarn --cwd client run start\"",
     "start": "yarn --cwd server run start",
-    "install": "yarn --cwd client install --force && yarn --cwd server install --force",
+    "instalAll": "yarn install --force && yarn --cwd client install --force && yarn --cwd server install --force",
     "heroku-postbuild": "yarn --cwd client install --force && yarn --cwd server install --force && yarn --cwd client run build",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "concurrently": "^5.3.0"
   }
 }
